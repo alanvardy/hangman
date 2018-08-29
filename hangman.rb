@@ -1,5 +1,6 @@
 class Game
   def initialize
+    puts "\nWELCOME TO HANGMAN!\n\n"
     @answer = load_word
     @guesses = ""
     @bad_guesses = 0
@@ -21,10 +22,9 @@ class Game
   end
 
   def print_display
-    12.times {print "-"}
-    puts "\nGuess the letter!"
+    puts "\nGuess the letter!\n\n"
     puts placeholder
-    puts "Guesses so far: #{@guesses}"
+    puts "\nGuesses so far: #{@guesses}"
     puts "Bad guesses left: #{@BAD_GUESSES_ALLOWED - @bad_guesses}"
   end
 
@@ -42,7 +42,7 @@ class Game
       print "Enter your guess: "
       guess = gets.chomp
     end
-    if @answer.include?(guess) && @guesses.include?(guess)
+    if @guesses.include?(guess)
       puts "You already guessed this!"
     elsif @answer.include?(guess)
       puts "Good guess!"
