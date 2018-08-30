@@ -5,7 +5,6 @@ class Game
   attr_accessor :game_over, :save_game
 
   def initialize
-    puts "\nWELCOME TO HANGMAN!\n\n"
     @answer = load_word
     @guesses = ""
     @bad_guesses = 0
@@ -14,7 +13,7 @@ class Game
     @save_game = false
   end
 
-  def load_word(filename = "5d+2a.txt")
+  def load_word(filename = "5d+2a.txt") #Pulls in a word from source dictionary
     file = File.open(filename)
     dictionary = file.select {|line| (line.chomp.length > 4 && line.chomp.length < 13)}
     dictionary[rand(dictionary.length)].chomp
@@ -32,7 +31,7 @@ class Game
     puts "Bad guesses left: #{@BAD_GUESSES_ALLOWED - @bad_guesses}"
   end
 
-  def placeholder
+  def placeholder #Creates the underscores and fills in letters
     placeholder = ""
     @answer.chars do |char|
       @guesses.include?(char) ? placeholder << char : placeholder << "_"
@@ -40,7 +39,7 @@ class Game
     placeholder.chars.join(" ")
   end
 
-  def enter_guess
+  def enter_guess #Takes guess and evaluates it
     guess = nil
     until ("a".."z").include?(guess) do
       print "Enter your guess, or type \'save\' to save the game: "
@@ -64,15 +63,15 @@ class Game
     puts "\n\n"
   end
 
-  def answer_guessed?
+  def answer_guessed? #checks to see if the answer has been completely guessed
     @answer.chars do |char|
       return false unless @guesses.include?(char)
     end
     return true
   end
 
-  def end_game
-    puts answer_guessed? ? "You Win!\n\n" : "You Lose!\n\n"
+  def end_game #final result
+    puts answer_guessed? ? "You Win!\n\n" : "You Lose!\nThe Answer was: #{@answer}\n\n"
   end
 end
 
@@ -100,7 +99,7 @@ def game_loop(game)
   save_to_file(game) if game.save_game
 end
 
-while true
+while true #Main menu system
   print "Welcome to Hangman!\nMain Menu\n(n)ew game\n(l)oad game\ne(x)it\n>> "
   input = gets.chomp
   case input
