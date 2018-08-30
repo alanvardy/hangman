@@ -101,7 +101,7 @@ def game_loop(game)
 end
 
 while true
-  print "Welcome to Hangman!\nMain Menu\n(n)ew game\n(l)oad game\ne(x)it\n>>"
+  print "Welcome to Hangman!\nMain Menu\n(n)ew game\n(l)oad game\ne(x)it\n>> "
   input = gets.chomp
   case input
   when "n"
