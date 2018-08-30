@@ -1,4 +1,9 @@
+require "pstore"
+
 class Game
+
+  attr_accessor :game_over, :save_game
+
   def initialize
     puts "\nWELCOME TO HANGMAN!\n\n"
     @answer = load_word
@@ -6,8 +11,7 @@ class Game
     @bad_guesses = 0
     @BAD_GUESSES_ALLOWED = 5
     @game_over = false
-    play_game until @game_over == true
-    end_game
+    @save_game = false
   end
 
   def load_word(filename = "5d+2a.txt")
@@ -39,8 +43,12 @@ class Game
   def enter_guess
     guess = nil
     until ("a".."z").include?(guess) do
-      print "Enter your guess: "
+      print "Enter your guess, or type \'save\' to save the game: "
       guess = gets.chomp
+      if guess == "save"
+        @save_game = true
+        return
+      end
     end
     if @guesses.include?(guess)
       puts "You already guessed this!"
@@ -68,4 +76,45 @@ class Game
   end
 end
 
-Game.new
+def save_to_file(game)
+  store = PStore.new("hangman.sav")
+  store.transaction do
+    store[:game] = game
+  end
+  puts "Game Saved!"
+end
+
+def load_from_file
+  store = PStore.new("hangman.sav")
+  store.transaction do
+    game = store[:game]
+  end
+  puts "Game loaded!"
+  game
+end
+
+def game_loop(game)
+  game.save_game = false
+  game.play_game until game.game_over || game.save_game
+  game.end_game if game.game_over
+  save_to_file(game) if game.save_game
+end
+
+while true
+  print "Welcome to Hangman!\nMain Menu\n(n)ew game\n(l)oad game\ne(x)it\n>>"
+  input = gets.chomp
+  case input
+  when "n"
+    puts "new game"
+    game = Game.new
+    game_loop(game)
+  when "l"
+    game = load_from_file
+    game_loop(game)
+  when "x"
+    puts "Goodbye!"
+    break
+  else
+    puts "Invalid entry. Please try again"
+  end
+end
